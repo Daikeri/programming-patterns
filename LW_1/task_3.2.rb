@@ -25,7 +25,7 @@ func, path = gets.chomp.split(' ')
 
 file_info = File.new path
 arr = file_info.gets.chomp.split(' ')
-arr = arr.map { |el| el.to_i }
+arr.map! { |el| el.to_i }
 
 
 case  func
