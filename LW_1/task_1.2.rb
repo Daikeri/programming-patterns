@@ -11,13 +11,11 @@ end
 # штучка сверху для корректной работы с русским языком
 
 puts "Представтесь, пожалуйста."
-user_name = gets
-exit if user_name.nil? or user_name.empty?
-user_name.chomp!
+user_name = ARGV[0].chomp
 print "Здравствуйте, #{user_name}!\n"
 
 puts "Какой ваш любимый ЯП?"
-answer = gets
+answer = STDIN.gets
 exit if answer.nil? or answer.empty?
 answer.chomp!
 
