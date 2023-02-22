@@ -4,3 +4,4 @@ test1 = Student.new('Алешина', 'Василиса', 'Денисовна', 
 test2 = Student.new('Крылов', 'Григорий', 'Евгеньевич', '+7 978 111 90 37')
 
 test1.get_info
+test2.get_info
