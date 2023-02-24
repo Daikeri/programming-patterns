@@ -1,7 +1,10 @@
 
 class Student
 
-  PHONE = '^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$'
+  PHONE = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
+  TELEGRAM = ''
+  EMAIL = ''
+  GIT = ''
 
   def Student.correct_phone?(str)
     str.match?(PHONE)
