@@ -1,11 +1,13 @@
 require_relative 'student.rb'
 
-test1 = Student.new('Алешина', 'Василиса', 'Денисовна',
-                    _phone: '+7 924 209 16 11', _id: 101)
-test2 = Student.new('Крылов', 'Григорий', 'Евгеньевич',
-                    _telegram: '@picklePop', _id: 43, _email: 'krilov@yandex.ru')
+test1 = Student.new({last_name:'Алешина', first_name:'Василиса', patronymic:'Денисовна',
+                     phone:'+7 924 209 16 11'})
 
-test3 = Student.new('Богомолов', 'Александр', 'Романович')
+test2 = Student.new({last_name:'Крылов', first_name:'Григорий', patronymic:'Евгеньевич',
+                     telegram:'@picklePop', id:43, email: 'krilov@yandex.ru'})
+
+test3 = Student.new({last_name:'Богомолов', first_name:'Александр', patronymic:'Романович'})
+
 
 test1.get_info
 test2.get_info

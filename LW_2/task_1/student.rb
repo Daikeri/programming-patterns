@@ -6,17 +6,17 @@ class Student
                 :phone, :telegram,
                 :email, :git
 
-  def initialize(_last_name, _first_name, _patronymic, _id:'unknown', _phone:'unknown',
-                 _telegram:'unknown', _email:'unknown', _git:'unknown')
+  def initialize(arg = {})
+    arg.default = 'unknown'
 
-    @last_name = _last_name
-    @first_name = _first_name
-    @patronymic = _patronymic
-    @id = _id
-    @phone = _phone
-    @telegram = _telegram
-    @email = _email
-    @git = _git
+    @last_name = arg[:last_name]
+    @first_name = arg[:first_name]
+    @patronymic = arg[:patronymic]
+    @id = arg[:id]
+    @phone = arg[:phone]
+    @telegram = arg[:telegram]
+    @email = arg[:email]
+    @git = arg[:git]
 
   end
 
@@ -25,4 +25,3 @@ class Student
   end
 
 end
-
