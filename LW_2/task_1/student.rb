@@ -1,14 +1,18 @@
 
 class Student
 
+  PHONE = '^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$'
+
+  def Student.correct_phone?(str)
+    str.match?(PHONE)
+  end
+
   attr_accessor :last_name, :first_name,
                 :patronymic, :id,
                 :phone, :telegram,
                 :email, :git
 
   def initialize(arg = {})
-    arg.default = 'unknown'
-
     @last_name = arg[:last_name]
     @first_name = arg[:first_name]
     @patronymic = arg[:patronymic]
@@ -17,6 +21,12 @@ class Student
     @telegram = arg[:telegram]
     @email = arg[:email]
     @git = arg[:git]
+
+    raise(ArgumentError, 'ФИО - обязательные параметры!') unless @last_name && @first_name && @patronymic
+
+    if @phone
+      raise(ArgumentError, 'Неккоректный формат номера телефона!') unless Student.correct_phone?(@phone)
+    end
 
   end
 
