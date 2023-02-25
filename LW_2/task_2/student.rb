@@ -61,22 +61,22 @@ class Student
   end
 
   def  get_info
-    "#{get_full_name} #{get_git} #{get_contacts}"
+    "#{get_full_name} #{get_git} #{get_contact}"
   end
-
-  protected
 
   def get_full_name
     "#{last_name} #{first_name[0]}. #{patronymic[0]}."
   end
 
-  def get_contacts
+  def get_contact
     "Номер телефона: #{phone} Телеграм: #{telegram} Почта: #{email}"
   end
 
   def get_git
     "Git: #{git}"
   end
+
+  protected
 
   def set_contacts(phone, telegram, email, git)
     raise(ArgumentError, 'Неверный формат номера телефона!') if phone && !Student.correct_phone?(phone)
