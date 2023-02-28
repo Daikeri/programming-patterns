@@ -50,7 +50,12 @@ class Student
     @last_name = arg[:last_name]
     @first_name = arg[:first_name]
     @patronymic = arg[:patronymic]
-    @id = arg[:id]
+
+    begin
+    @id = Integer(arg[:id])
+    rescue ArgumentError
+      puts 'Полю ID должно быть присвоено целочисленное значение!'
+    end
 
     raise(ArgumentError, 'ФИО - обязательные параметры!') unless @last_name && @first_name && @patronymic
 
@@ -61,22 +66,22 @@ class Student
   end
 
   def  get_info
-    "#{get_full_name} #{get_git} #{get_contact}"
-  end
-
-  def get_full_name
-    "#{last_name} #{first_name[0]}. #{patronymic[0]}."
-  end
-
-  def get_contact
-    "Номер телефона: #{phone} Телеграм: #{telegram} Почта: #{email}"
-  end
-
-  def get_git
-    "Git: #{git}"
+    "#{get_full_name}, #{get_git}, #{get_contact}"
   end
 
   protected
+
+  def get_full_name
+    "#{last_name} #{first_name[0]}.#{patronymic[0]}."
+  end
+
+  def get_contact
+    "#{@phone ? @phone: '-'}; #{@telegram ? @telegram : '-'}; #{@email ? @email : '-'}"
+  end
+
+  def get_git
+    "#{git}"
+  end
 
   def set_contacts(phone, telegram, email, git)
     raise(ArgumentError, 'Неверный формат номера телефона!') if phone && !Student.correct_phone?(phone)
@@ -102,5 +107,4 @@ class Student
   def valid_other
     raise(ArgumentError, 'Должен быть указан хотя бы один контакт!') unless phone || telegram || email
   end
-
 end
