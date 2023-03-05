@@ -7,6 +7,28 @@ class Student < StudentSuper
     new(hash)
   end
 
+  def Student.read_from_txt(path='D:\RubyProject\LW_2\task_2\read_file')
+    count_id = 1
+    acc = []
+
+    begin
+    arr = IO.readlines(path)
+    arr.map! { |str|str.chomp! }
+
+    arr.each do |str_obj|
+      temp = Student.from_string(count_id, str_obj)
+      acc.push(temp)
+      count_id += 1
+    end
+
+    acc
+    rescue SystemCallError
+      puts 'Не найден файл по заданному пути!'
+    rescue => error
+      puts "#{error}\nID Записи: #{count_id}"
+    end
+  end
+
   def initialize(arg = {})
     @id = arg[:id]
     @last_name = arg[:last_name]
@@ -28,7 +50,7 @@ class Student < StudentSuper
     set_contacts(git: @git, phone: @phone, telegram: @telegram, email: @email)
   end
 
-  def  get_info
+  def get_info
     "#{@id}, #{get_full_name}, #{@git}, #{get_contacts}"
   end
 
