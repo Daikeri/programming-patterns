@@ -29,6 +29,19 @@ class Student < StudentSuper
     end
   end
 
+  def Student.write_to_txt(arr, path='D:\RubyProject\LW_2\task_2\write_file')
+    begin
+      File.open(path, 'w') do |file|
+        arr.each { |obj| file.write "#{obj.get_full_info}\n" }
+      end
+    rescue SystemCallError
+      puts 'Не найден файл по заданному пути!'
+    rescue => error
+      puts error
+    end
+
+  end
+
   def initialize(arg = {})
     @id = arg[:id]
     @last_name = arg[:last_name]
@@ -51,7 +64,11 @@ class Student < StudentSuper
   end
 
   def get_info
-    "#{@id}, #{get_full_name}, #{@git}, #{get_contacts}"
+    "#{get_full_name}, #{@git}, #{get_contacts}"
+  end
+
+  def get_full_info
+    "#{@last_name}, #{@first_name}, #{@patronymic}, #{@git}, #{get_contacts}"
   end
 
   protected
