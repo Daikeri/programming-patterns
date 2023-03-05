@@ -1,52 +1,29 @@
+require_relative 'student_super.rb'
 require_relative 'student.rb'
 
-class StudentShort < Student
+class StudentShort < StudentSuper
 
-  def StudentShort.from_object(obj)
-    id = obj.id
-    str = obj.get_info
-    new(id, str)
+  def StudentShort.from_string(id, str)
+    hash = super(id, str)
+    new(Student.new(hash))
   end
 
   attr_reader :id, :full_name,
-              :git, :contact
-
-  def initialize(id, str)
-    begin
-      @id = Integer(id)
-      value = str.split(', ').map! { |val| val == '-' ? nil : val }
-    rescue ArgumentError
-      puts 'Полю ID должно быть присвоено целочисленное значение!'
-    rescue NoMethodError
-      puts 'Переданное строка не подлежит парсингу!'
-    end
-
-    @full_name = value[0]
-    raise(ArgumentError, 'Фамилия и инициалы - обязательный параметр!') unless @full_name
-
-    set_contacts(value[1], value[2])
-  end
-
-  def get_info
-    "#{@id} #{@full_name} #{@git} #{@contact}"
-  end
+              :git, :contacts
 
   protected :last_name, :first_name, :patronymic,
             :phone, :telegram, :email,
             :last_name=, :first_name=, :patronymic=,
             :phone=, :telegram=, :email=
 
-  protected
+  def initialize(obj)
+    @id = obj.id
+    @full_name = "#{obj.last_name} #{obj.first_name[0]}.#{obj.patronymic[0]}."
+    @git = obj.git
+    @contacts = "#{obj.phone ? obj.phone : '-'}, #{obj.telegram ? obj.telegram : '-'}, #{obj.email ? obj.email : '-'}"
+  end
 
-  def set_contacts(git, contact)
-    value = contact.split('; ').map! { |val| val == '-' ? nil : val }
-    phone, telegram, email = value
-
-    #Git и конкретизированные контакты инициализируется методом родительского класса
-    super(phone, telegram, email, git)
-    validate
-
-    @contact = get_contact
-    @phone, @telegram, @email = nil
+  def get_info
+    "#{@id}, #{@full_name}, #{@git}, #{@contacts}"
   end
 end
