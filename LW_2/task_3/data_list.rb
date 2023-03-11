@@ -8,11 +8,15 @@ class DataList
   end
 
   def sel(numbers)
-    numbers.is_a?(Array) ? @select += numbers : @select += [numbers]
+    begin
+    numbers.is_a?(Array) ? @select += numbers.each { |el| Integer(el) } : @select += [Integer(numbers)]
+    rescue ArgumentError
+      puts "Переданное(-ые) значение(-ия) должно(-ы) быть целочисленным(и)!"
+    end
   end
 
   def get_selected
-    @select.is_a?(Array) ? @arr[@select.first..@select.last] : @arr[@select]
+    @select.inject([]) { |acc, el| acc + @arr[el]  }
   end
 
   def get_names
