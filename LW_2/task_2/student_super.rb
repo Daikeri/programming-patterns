@@ -33,7 +33,7 @@ class StudentSuper
         raise(ArgumentError,"Неверный формат переданной строки.\nПроверьте кол-во переданных значений.")
       end
 
-      value = value.map { |val| val == '-' ? nil : val }
+      value.map! { |val| val == '-' ? nil : val }
       arg = class_field.zip(value).to_h
     rescue NoMethodError
       puts 'Переданное значение не подлежит парсингу!'
