@@ -2,9 +2,14 @@
 class DataTable
   def initialize(source_array)
     @arr = []
+    count_attr = 1
     source_array.each do |obj|
-      temp = [obj.id]
-      temp += (obj.get_full_info.split(', '))
+      temp = [count_attr]
+      field = obj.instance_variables
+      field.map! { |sym| sym.to_s.gsub(/@/,'') }
+      field.select! { |el| el != 'id' }
+      field.each { |proc| temp.push(obj.instance_eval(proc)) }
+      count_attr += 1
       @arr.push(temp)
     end
   end
@@ -18,6 +23,6 @@ class DataTable
   end
 
   def n_columns
-    @arr.size[0]
+    @arr[0].size
   end
 end
