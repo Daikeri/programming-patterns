@@ -1,5 +1,4 @@
 
-
 class DataList
   def initialize(source_array)
     @arr = source_array
