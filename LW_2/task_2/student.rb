@@ -1,83 +1,79 @@
-require_relative 'student_super.rb'
+require_relative 'student_super'
 
 class Student < StudentSuper
 
+  public_class_method :new
+
+  public :id, :id=,
+         :git, :git=,
+         :phone, :phone=,
+         :telegram, :telegram=,
+         :email, :email=
+
+  NAME = /(^[А-Я][а-я]+$)|(^[A-Z][a-z]+$)/
+
+  def Student.valid_name?(str)
+    str.match?(NAME)
+  end
+
   def Student.from_string(id, str)
-    hash = super(id, str)
-    new(hash)
-  end
-
-  def Student.read_from_txt(path='D:\RubyProject\LW_2\task_2\read_file')
-    count_id = 1
-    acc = []
+    class_field = [:id, :last_name, :first_name, :patronymic, :git, :phone, :telegram, :email]
 
     begin
-    arr = IO.readlines(path)
-    arr.map! { |str|str.chomp! }
+      value = str.split(', ')
+      value.unshift(id)
 
-    arr.each do |str_obj|
-      temp = Student.from_string(count_id, str_obj)
-      acc.push(temp)
-      count_id += 1
-    end
-
-    acc
-    rescue SystemCallError
-      puts 'Не найден файл по заданному пути!'
-    rescue => error
-      puts "#{error}\nID Записи: #{count_id}"
-    end
-  end
-
-  def Student.write_to_txt(arr, path='D:\RubyProject\LW_2\task_2\write_file')
-    begin
-      File.open(path, 'w') do |file|
-        arr.each { |obj| file.write "#{obj.get_full_info}\n" }
+      if value.size < class_field.size
+        raise(ArgumentError,"Неверный формат переданной строки.\nПроверьте кол-во переданных значений.")
       end
-    rescue SystemCallError
-      puts 'Не найден файл по заданному пути!'
-    rescue => error
-      puts error
-    end
 
+      value.map! { |val| val == '-' ? nil : val }
+      arg = class_field.zip(value).to_h
+      from_hash(arg)
+    rescue NoMethodError
+      puts 'Переданное значение не подлежит парсингу!'
+    end
   end
 
-  def initialize(arg = {})
-    @id = arg[:id]
-    @last_name = arg[:last_name]
-    @first_name = arg[:first_name]
-    @patronymic = arg[:patronymic]
-    @git = arg[:git]
-    @phone = arg[:phone]
-    @telegram = arg[:telegram]
-    @email = arg[:email]
+  def Student.from_hash(dict)
+    id = dict.delete(:id)
+    last_name = dict.delete(:last_name)
+    first_name = dict.delete(:first_name)
+    patronymic = dict.delete(:patronymic)
+    new(id, last_name, first_name, patronymic, **dict)
+  end
 
-    validate
+  def initialize(id, last_name, first_name, patronymic, git:nil, phone:nil, telegram:nil, email:nil)
+    raise(ArgumentError, 'ФИО - обязательные параметры!') unless last_name && first_name && patronymic
+    self.id = id
+    self.last_name = last_name
+    self.first_name = first_name
+    self.patronymic = patronymic
+    self.git = git
+    self.phone = phone
+    self.telegram = telegram
+    self.email = email
+  end
 
-    begin
-      Integer(@id)
-    rescue ArgumentError
-      puts 'Полю ID должно быть присвоено целочисленное значение!'
-    end
+  def last_name=(value)
+    raise(ArgumentError, 'Неправильное имя!') unless !value.nil? && Student.valid_name?(value)
+    @last_name = value
+  end
 
-    set_contacts(git: @git, phone: @phone, telegram: @telegram, email: @email)
+  def first_name=(value)
+    raise(ArgumentError, 'Неправильная фамилия!') unless !value.nil? && Student.valid_name?(value)
+    @first_name = value
+  end
+
+  def patronymic=(value)
+    raise(ArgumentError, 'Неправильное отчество!') unless !value.nil? && Student.valid_name?(value)
+    @patronymic = value
   end
 
   def get_info
-    "#{get_full_name}, #{@git}, #{get_contacts}"
+    temp_arr = [@phone, @telegram, @email]
+    contact = temp_arr.find_index { |el| !el.nil? }
+    "#{@last_name} #{@first_name[0]}. #{@patronymic[0]}., #{@git ? @git : '-'}, #{contact ? temp_arr[contact] : '-'}"
   end
 
-  def get_full_info
-    "#{@last_name}, #{@first_name}, #{@patronymic}, #{@git}, #{get_contacts}"
-  end
-
-  protected
-
-  def get_full_name
-    "#{@last_name} #{@first_name[0]}.#{@patronymic[0]}."
-  end
-
-  def get_contacts
-    "#{@phone ? @phone: '-'}, #{@telegram ? @telegram : '-'}, #{@email ? @email : '-'}"
-  end
 end

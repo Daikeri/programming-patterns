@@ -1,29 +1,21 @@
-require_relative 'student_super.rb'
-require_relative 'student.rb'
+require_relative 'student_super'
 
 class StudentShort < StudentSuper
 
-  def StudentShort.from_string(id, str)
-    hash = super(id, str)
-    new(Student.new(hash))
+  public_class_method :new
+
+  attr_accessor :full_name, :contact
+
+  def StudentShort.from_object(obj)
+    new(obj.id, obj.get_info)
   end
 
-  attr_reader :id, :full_name,
-              :git, :contacts
-
-  protected :last_name, :first_name, :patronymic,
-            :phone, :telegram, :email,
-            :last_name=, :first_name=, :patronymic=,
-            :phone=, :telegram=, :email=
-
-  def initialize(obj)
-    @id = obj.id
-    @full_name = "#{obj.last_name} #{obj.first_name[0]}.#{obj.patronymic[0]}."
-    @git = obj.git
-    @contacts = "#{obj.phone ? obj.phone : '-'}, #{obj.telegram ? obj.telegram : '-'}, #{obj.email ? obj.email : '-'}"
+  def initialize(id, str)
+    decompose_str = str.split(', ')
+    self.id = id
+    self.full_name = decompose_str[0]
+    self.git = decompose_str[1]
+    self.contact = decompose_str[2]
   end
 
-  def get_info
-    "#{@id}, #{@full_name}, #{@git}, #{@contacts}"
-  end
 end

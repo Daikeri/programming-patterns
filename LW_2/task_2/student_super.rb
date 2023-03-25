@@ -1,84 +1,91 @@
 
 
 class StudentSuper
+
+  private_class_method :new
+
   GIT = /\Ahttps:\/\/github\.com\/\w+\z/
-  PHONE = /^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
-  TELEGRAM = /^@[A-Za-z\d_]{5,32}$/
+  PHONE = /^\+?[78] ?[(-]?\d{3} ?[)-]?[ -]?\d{3}[ -]?\d{2}[ -]?\d{2}$/
+  TELEGRAM = /^[a-zA-Z0-9_.]+$/
   EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
-  def StudentSuper.correct_git?(str)
+  def StudentSuper.valid_git?(str)
     str.match?(GIT)
   end
 
-  def StudentSuper.correct_phone?(str)
+  def StudentSuper.valid_phone?(str)
     str.match?(PHONE)
   end
 
-  def StudentSuper.correct_telegram?(str)
+  def StudentSuper.valid_telegram?(str)
     str.match?(TELEGRAM)
   end
 
-  def StudentSuper.correct_email?(str)
+  def StudentSuper.valid_email?(str)
     str.match?(EMAIL)
   end
 
-  def StudentSuper.from_string(id, str)
-    class_field = [:id, :last_name, :first_name, :patronymic, :git, :phone, :telegram, :email]
+  attr_reader :id, :last_name,
+              :first_name, :patronymic,
+              :phone, :telegram,
+              :email, :git
 
-    begin
-      value = str.split(', ')
-      value.unshift(id)
-
-      if value.size < class_field.size
-        raise(ArgumentError,"Неверный формат переданной строки.\nПроверьте кол-во переданных значений.")
-      end
-
-      value.map! { |val| val == '-' ? nil : val }
-      arg = class_field.zip(value).to_h
-    rescue NoMethodError
-      puts 'Переданное значение не подлежит парсингу!'
-    end
+  def to_s
+    str_represent = ""
+    field = self.instance_variables
+    field.map! { |sym| sym.to_s.gsub(/@/,'') }
+    field.select! { |el| el != 'id' }
+    field.each { |attr| str_represent += "#{self.instance_eval(attr)}, "}
+    str_represent[0..str_represent.length-3]
   end
-
-  attr_accessor :id, :last_name,
-                :first_name, :patronymic,
-                :phone, :telegram,
-                :email, :git
 
   protected
 
-  def validate
-    valid_id
-    valid_full_name
-    valid_git
-    valid_contacts
+  def id=(value)
+    begin
+      Integer(value)
+      @id = value
+    rescue ArgumentError
+      puts 'Полю ID должно быть присвоено целочисленное значение'
+    end
   end
 
-  def valid_id
-    raise(ArgumentError, 'Обязательно должен быть указан ID!') unless @id
+  def git=(value)
+    raise(ArgumentError, 'Неверный формат Git!') unless value.nil? || StudentSuper.valid_git?(value)
+    @git = value
   end
 
-  def valid_full_name
-    raise(ArgumentError, 'ФИО - обязательные параметры!') unless @last_name && @first_name && @patronymic
+  def phone=(value)
+    raise(ArgumentError, 'Неверный формат номера телефона!') unless value.nil? || StudentSuper.valid_phone?(value)
+    @phone = value
   end
 
-  def valid_git
-    raise(ArgumentError, 'Обязательно должен быть указан Гит!') unless @git
+  def telegram=(value)
+    raise(ArgumentError, 'Неверный формат ника telegram!') unless value.nil? || StudentSuper.valid_telegram?(value)
+    @telegram = value
   end
 
-  def valid_contacts
-    raise(ArgumentError, 'Должен быть указан хотя бы один контакт!') unless @phone || @telegram || @email
+  def email=(value)
+    raise(ArgumentError, 'Неверный формат email') unless value.nil? || StudentSuper.valid_email?(value)
+    @email = value
   end
 
-  def set_contacts(git:, phone:, telegram:, email:)
-    raise(ArgumentError, 'Неверный формат ссылки на Гит!') if git && !StudentSuper.correct_git?(git)
-    raise(ArgumentError, 'Неверный формат номера телефона!') if phone && !StudentSuper.correct_phone?(phone)
-    raise(ArgumentError, 'Неверный формат имени пользователя телеграмм!') if telegram && !StudentSuper.correct_telegram?(telegram)
-    raise(ArgumentError, 'Неверный формат электронной почты!') if email && !StudentSuper.correct_email?(email)
-
-    @git = git
-    @phone = phone
-    @telegram = telegram
-    @email = email
+  def set_contacts(phone:nil, telegram:nil, email:nil)
+    self.phone = phone if phone
+    self.telegram = telegram if telegram
+    self.email = email if email
   end
+
+  def available?
+    has_git? && has_contacts?
+  end
+
+  def has_git?
+    @git ? true : false
+  end
+
+  def has_contacts?
+    @phone || @telegram || @email ? true : false
+  end
+
 end
