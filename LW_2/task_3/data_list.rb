@@ -1,22 +1,46 @@
 
 class DataList
+
+  protected
+
+  attr_writer :data
+
+  public
+
+  attr_reader :names, :data
+
   def initialize(source_array)
-    @arr = source_array
+    self.arr = source_array
     @select = []
   end
 
-  def sel(numbers)
-    begin
-    numbers.is_a?(Array) ? @select += numbers.map! { |el| Integer(el - 1) } : @select += [Integer(numbers - 1)]
-    rescue ArgumentError
-      puts "Переданное(-ые) значение(-ия) должно(-ы) быть целочисленным(и)!"
+  def arr=(source_array)
+    @arr = []
+    count_obj = 1
+    source_array.each do |obj|
+      @arr.push([count_obj, obj])
+      count_obj += 1
     end
     nil
   end
 
-  def get_selected
-    res = @select.inject([]) { |acc, el| acc.push @arr[el].id  }
-    @select = []
-    res
+  def sel(number)
+    @select.push(number)
+    nil
   end
+
+  def get_selected
+    acc = []
+    @select.each do |number|
+      result = (@arr.find { |tuple| tuple[0] == number })
+      acc.push(result[1].id)
+    end
+    acc
+  end
+
+  def clear_selected
+    @select = []
+    nil
+  end
+
 end
