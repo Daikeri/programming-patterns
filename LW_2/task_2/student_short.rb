@@ -14,8 +14,8 @@ class StudentShort < StudentSuper
     decompose_str = str.split(', ')
     self.id = id
     self.full_name = decompose_str[0]
-    self.git = decompose_str[1]
-    self.contact = decompose_str[2]
+    self.git = decompose_str[1] == '-' ? nil : decompose_str[1]
+    self.contact = decompose_str[2] == '-' ? nil : decompose_str[2]
   end
 
 end
