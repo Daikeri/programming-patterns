@@ -1,17 +1,19 @@
 require_relative 'students_list_base'
+require 'json'
 
-class StudentsListTxt < StudentsListBase
+class StudentsListJSON < StudentsListBase
 
   public_class_method :new
 
-  def initialize(path='D:/RubyProject/LW_2/task_4/read_txt.txt')
+  def initialize(path='D:/RubyProject/LW_2/task_4/read_json.json')
     super
   end
 
-  def write_to_file(path='D:/RubyProject/LW_2/task_4/write_txt.txt')
+  def write_to_file(path='D:/RubyProject/LW_2/task_4/write_json.json')
     begin
+      @arr.map! { |obj| obj.as_hash }
       File.open(path, 'w') do |file|
-        @arr.each { |obj| file.write "#{obj.to_s}\n" }
+        file.write JSON.pretty_generate(@arr)
       end
     rescue SystemCallError
       puts 'Не найден файл по заданному пути!'
@@ -25,12 +27,12 @@ class StudentsListTxt < StudentsListBase
   def set_value(path)
     begin
       count_obj = 1
-      arr = IO.readlines(path)
-      arr.map! { |str|str.chomp! }
-      id_temp_arr = @id_range.sample(arr.length)
-      general_arr = id_temp_arr.zip(arr)
-      general_arr.each do |tuple|
-        temp_obj = Student.from_string(tuple[0], tuple[1])
+      str = IO.read(path).chomp
+      hash_arr = JSON.parse(str,{symbolize_names: true})
+      id_temp_arr = @id_range.sample(hash_arr.length)
+      hash_arr.each { |hash| hash[:id] = id_temp_arr.shift }
+      hash_arr.each do |hash|
+        temp_obj = Student.from_hash(hash)
         @arr.push(temp_obj)
         count_obj += 1
       end
@@ -42,4 +44,3 @@ class StudentsListTxt < StudentsListBase
   end
 
 end
-
