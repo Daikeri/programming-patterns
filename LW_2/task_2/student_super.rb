@@ -35,19 +35,18 @@ class StudentSuper
     field = self.instance_variables
     field.map! { |sym| sym.to_s.gsub(/@/,'') }
     field.select! { |el| el != 'id' }
-    field.each { |attr| str_represent += "#{self.instance_eval(attr)}, "}
+    field.each do |attr|
+      temp = self.instance_eval(attr)
+      str_represent += "#{temp ? temp : '-'}, "
+    end
     str_represent[0..str_represent.length-3]
   end
 
   protected
 
   def id=(value)
-    begin
-      Integer(value)
-      @id = value
-    rescue ArgumentError
-      puts 'Полю ID должно быть присвоено целочисленное значение'
-    end
+    raise(ArgumentError, 'Полю ID должно быть присвоено целочисленное значение') unless value.is_a?(Integer)
+    @id = value
   end
 
   def git=(value)
