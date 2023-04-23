@@ -13,7 +13,7 @@ class DBAdapter
 
   def get_by_id(id)
     request = @database_object.get_cursor.execute "select * from Students where id=#{id}"
-    to_student(request)
+    to_student(*request)
   end
 
   def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil)
