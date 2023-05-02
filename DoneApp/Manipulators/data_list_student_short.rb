@@ -3,6 +3,8 @@ require_relative 'data_table.rb'
 
 class DataListStudentShort < DataList
 
+  attr_reader :subscribers
+
   def initialize(source_array)
     super
     @names = set_names
@@ -12,7 +14,11 @@ class DataListStudentShort < DataList
     raise(ArgumentError, 'Массив может содержать только элементы StudentShort!') unless valid_array?(source_array)
     super
     self.data = DataTable.new(@arr)
-    nil
+    self.notify if @subscribers
+  end
+
+  def notify
+    @subscribers.each { |obj| obj.update(self.data) }
   end
 
   protected

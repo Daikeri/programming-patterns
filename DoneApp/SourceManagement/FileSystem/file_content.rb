@@ -21,17 +21,14 @@ class FileContent
 
   def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil)
     message = "В качестве необязатального аргумента может использоваться только объект типа DataListStudentShort!"
-
+    stud_short_arr = list_number * quan_element > @arr.length ? @arr : @arr[(list_number - 1) * quan_element...list_number * quan_element]
+    stud_short_arr.map! { |obj| StudentShort.from_object(obj)}
     if exist_data_list
       raise(ArgumentError, message) unless valid_data_list?(exist_data_list)
-      student_short_arr = DataListPagination.convert(exist_data_list, list_number, quan_element)
-      student_short_arr = student_short_arr[(list_number - 1) * quan_element...list_number * quan_element]
-      return DataListStudentShort.new(student_short_arr)
+      exist_data_list.arr = stud_short_arr
+      return exist_data_list
     end
-
-    @arr.map! { |obj| StudentShort.from_object(obj)}
-    @arr = @arr[(list_number - 1) * quan_element...list_number * quan_element]
-    DataListStudentShort.new(@arr)
+    DataListStudentShort.new(stud_short_arr)
   end
 
   def sort_by_full_name

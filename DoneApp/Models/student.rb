@@ -66,7 +66,6 @@ class Student < StudentSuper
   end
 
   def first_name=(value)
-    #print "#{value}\n"
     raise(ArgumentError, "Неправильное имя! #{value}") unless !value.nil? && Student.valid_name?(value)
     @first_name = value
   end
@@ -77,9 +76,10 @@ class Student < StudentSuper
   end
 
   def get_info
-    temp_arr = [@phone, @telegram, @email]
-    contact = temp_arr.find_index { |el| !el.nil? }
-    "#{@last_name} #{@first_name[0]}. #{@patronymic[0]}., #{@git ? @git : '-'}, #{contact ? temp_arr[contact] : '-'}"
+    contacts_sym = [:@phone, :@telegram, :@email]
+    index = contacts_sym.find_index { |sym| !self.instance_variable_get(sym).nil? }
+    contact = index ? [contacts_sym[index].to_s.gsub(/@/,''), self.instance_variable_get(contacts_sym[index])] : %w[contact -]
+    "#{@last_name} #{@first_name[0]}. #{@patronymic[0]}., #{@git ? @git : '-'}, #{contact[0]}:#{contact[1]}"
   end
 
   def as_hash

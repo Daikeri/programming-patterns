@@ -10,7 +10,7 @@ table_struct = "id integer primary key autoincrement,
               telegram text,
               email text"
 
-students_quantity = 100
+students_quantity = 1000
 system "ruby D:/RubyProject/DoneApp/SourceManagement/DBSystem/DBScripts/Manipulations/db_create.rb #{data_base_name}"
 system "ruby D:/RubyProject/DoneApp/SourceManagement/DBSystem/DBScripts/Manipulations/db_add_table.rb #{data_base_name} #{table_name} '#{table_struct}'"
 system "ruby D:/RubyProject/DoneApp/SourceManagement/DBSystem/DBScripts/FilledDB/db_insert_data_set.rb #{data_base_name} #{table_name} #{students_quantity}"

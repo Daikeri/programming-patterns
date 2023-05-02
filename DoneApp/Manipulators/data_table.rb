@@ -9,7 +9,7 @@ class DataTable
       field = obj[1].instance_variables
       field.map! { |sym| sym.to_s.gsub(/@/,'') }
       field.select! { |el| el != 'id' }
-      field.each { |proc| temp.push(obj[1].instance_eval(proc)) }
+      field.each { |proc| proc.is_a?(Hash) ? temp << proc : temp << obj[1].instance_eval(proc) }
       @arr.push(temp)
     end
   end

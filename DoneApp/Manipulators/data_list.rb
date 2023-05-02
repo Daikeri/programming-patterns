@@ -12,6 +12,7 @@ class DataList
   def initialize(source_array)
     self.arr = source_array
     @select = []
+    @subscribers = []
   end
 
   def arr=(source_array)
@@ -21,7 +22,6 @@ class DataList
       @arr.push([count_obj, obj])
       count_obj += 1
     end
-    nil
   end
 
   def sel(number)
@@ -41,6 +41,17 @@ class DataList
   def clear_selected
     @select = []
     nil
+  end
+
+  def subscribe(obj)
+    @subscribers.push(obj)
+  end
+
+  def unsubscribe(sub_obj)
+    @subscribers.delete(sub_obj)
+  end
+
+  def notify
   end
 
 end

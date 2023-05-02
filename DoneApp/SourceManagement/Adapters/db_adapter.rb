@@ -18,14 +18,13 @@ class DBAdapter
 
   def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil)
     message = "В качестве необязатального аргумента может использоваться только объект типа DataListStudentShort!"
+    request_result = @database_object.get_cursor.execute "select * from Students limit #{(list_number - 1) * quan_element}, #{quan_element}"
     if exist_data_list
       raise(ArgumentError, message) unless valid_data_list?(exist_data_list)
-      student_short_arr = DataListPagination.convert(exist_data_list, list_number, quan_element)
-      student_short_arr = student_short_arr[(list_number - 1) * quan_element...list_number * quan_element]
-      return DataListStudentShort.new(student_short_arr)
+      exist_data_list.arr = to_student_short_arr(request_result)
+      return exist_data_list
     end
-    request_result = @database_object.get_cursor.execute "select * from Students limit #{(list_number - 1) * quan_element}, #{quan_element}"
-    to_data_list(request_result)
+    to_data_list_student_short(request_result)
   end
 
   def append(object)
@@ -63,16 +62,19 @@ class DBAdapter
     "last_name, first_name, patronymic, git, phone, telegram, email"
   end
 
-  def to_data_list(arr_hash)
-    arr_hash.map! { |hash| hash.transform_keys { |key| key.to_sym } }
-    arr_hash.map! { |hash| Student.from_hash(hash) }
-    arr_hash.map! { |obj| StudentShort.from_object(obj) }
-    DataListStudentShort.new(arr_hash)
-  end
-
   def to_student(hash)
     hash.transform_keys! { |key| key.to_sym }
     Student.from_hash(hash)
+  end
+
+  def to_student_short_arr(arr_hash)
+    arr_hash.map! { |hash| to_student(hash) }
+    arr_hash.map! { |stud_obj| StudentShort.from_object(stud_obj) }
+  end
+
+  def to_data_list_student_short(arr_hash)
+    to_student_short_arr(arr_hash)
+    DataListStudentShort.new(arr_hash)
   end
 
 end
