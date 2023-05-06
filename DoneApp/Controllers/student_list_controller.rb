@@ -7,6 +7,8 @@ require 'D:\RubyProject\DoneApp\Controllers\data_list_contract.rb'
 
 class StudentListController
 
+  attr_reader :student_list_obj
+
   def initialize(view_obj)
     @view_obj = view_obj
     @data_list_obj = DataListStudentShort.new([])
@@ -18,11 +20,10 @@ class StudentListController
     @student_list_obj = StudentList.new(adapter)
   end
 
-  def refresh_data(page, quan_rows)
+  def refresh_data(page=@view_obj.current_page, quan_rows=@view_obj.quan_rows)
     @data_list_obj = @student_list_obj.get_k_n_student_short_list(page, quan_rows, @data_list_obj)
     @view_obj.update_total_count(@student_list_obj.get_student_count)
     @data_list_obj.notify
   end
-
 end
 

@@ -240,4 +240,4 @@ def json_data_set(quan)
   File.write('dataset.json', JSON.pretty_generate(dataset))
 end
 
-json_data_set(1000)
+json_data_set(100)

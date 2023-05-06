@@ -8,7 +8,7 @@ std1 = Student.from_hash({
                            last_name: 'Кот',
                            first_name: 'Дмитрий',
                            patronymic: 'Олегович',
-                           phone: '+7 924 209 16 11'
+                           phone: nil
                          })
 
 short = StudentShort.from_object(std1)
@@ -23,5 +23,6 @@ arr = []
   (0...columns).each { |j| temp << data_table.get(i,j) }
   arr << temp
 end
-print arr[0]
+
+#print arr[0]
 

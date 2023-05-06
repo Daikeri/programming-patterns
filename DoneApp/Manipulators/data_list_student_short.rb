@@ -18,7 +18,7 @@ class DataListStudentShort < DataList
   end
 
   def notify
-    @subscribers.each { |obj| obj.update(self.data) }
+    @subscribers.each { |obj| obj.update(self) }
   end
 
   protected

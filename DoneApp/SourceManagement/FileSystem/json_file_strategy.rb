@@ -26,9 +26,10 @@ class JsonFileStrategy
 
   def write_to_file(path, data)
     begin
-      data.map! { |obj| obj.as_hash }
+      temp = data.map { |obj| obj.as_hash }
+      temp.each { |hash| hash.delete('id') }
       File.open(path, 'w') do |file|
-        file.write JSON.pretty_generate(data)
+        file.write JSON.pretty_generate(temp)
       end
     rescue SystemCallError
       puts 'Не найден файл по заданному пути!'

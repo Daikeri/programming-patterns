@@ -9,6 +9,7 @@ class DBAdapter
 
   def initialize
     @database_object = DBConnection.instance
+    set_count_id
   end
 
   def get_by_id(id)
@@ -30,7 +31,7 @@ class DBAdapter
   def append(object)
     temp = object.to_s.split(', ').map! { |el| el == '-' ? 'null' : el}
     values = ""
-    temp.each { |el| values += "'#{el}',"}
+    temp.each { |el| el == 'null' ? values += "#{el}," : values += "'#{el}',"}
     @database_object.get_cursor.execute "insert into Students (#{self.attr}) values (#{values[0..values.length - 2]})"
   end
 
@@ -39,7 +40,7 @@ class DBAdapter
     hash.delete("id")
     hash.transform_values! { |value| value.nil? ? 'null' : value }
     request = ''
-    hash.each_pair { |key, value| request += "#{key.to_s} = '#{value}',"}
+    hash.each_pair { |key, value| value == 'null' ? request += "#{key.to_s} = #{value}," : request += "#{key.to_s} = '#{value}',"}
     @database_object.get_cursor.execute "update Students set #{request[0..request.length-2]} where id = #{id}"
   end
 
@@ -52,7 +53,18 @@ class DBAdapter
     hash.first.values.first
   end
 
+  def id_count
+    res = @id_count
+    @id_count += 1
+    res
+  end
+
   protected
+
+  def set_count_id
+    hash = @database_object.get_cursor.execute("SELECT max(id) FROM Students").first
+    @id_count = hash['max(id)'] + 1
+  end
 
   def valid_data_list?(object)
     object.is_a?(DataListStudentShort)

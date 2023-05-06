@@ -31,4 +31,8 @@ class StudentList
     @adapter_obj.get_student_count
   end
 
+  def id_count
+    @adapter_obj.id_count
+  end
+
 end

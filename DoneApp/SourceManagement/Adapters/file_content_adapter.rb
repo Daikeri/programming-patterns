@@ -30,4 +30,8 @@ class FileContentAdapter
     @file_content_obj.get_student_count
   end
 
+  def id_count
+    @file_content_obj.id_count
+  end
+
 end

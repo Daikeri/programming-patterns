@@ -19,7 +19,6 @@ class MainWindow
       }
     }.show
   end
-
 end
 
-MainWindow.new.display
+#MainWindow.new.display

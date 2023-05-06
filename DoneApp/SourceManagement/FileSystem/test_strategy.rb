@@ -1,5 +1,6 @@
 require_relative 'file_content'
 require 'D:\RubyProject\DoneApp\Manipulators\data_list_student_short.rb'
+require 'D:\RubyProject\DoneApp\Models\student.rb'
 
 =begin
 txt = StudentsListUnified.new('D:/RubyProject/LW_2/task_4/read_txt.txt')
@@ -13,6 +14,7 @@ yaml.write_to_file('D:/RubyProject/LW_2/task_4/write_yaml.yaml')
 =end
 
 content = FileContent.new('D:\RubyProject\DoneApp\dataset.json')
+=begin
 exist_data_list = DataListStudentShort.new([])
 
 data_list = content.get_k_n_student_short_list(100, 1001, exist_data_list)
@@ -26,5 +28,9 @@ arr = []
   (0...columns).each { |j| temp << data_table_obj.get(i,j) }
   arr << temp
 end
+=end
+#content.append(Student.from_hash({id:45,last_name:"Kot", first_name:"Dmitry", patronymic:'Olegovich'}))
+#content.arr.each {|obj| print"#{obj}\n"}
 #print "#{arr[1]}"
 #arr.each { |obj| print "#{obj}\n" }
+

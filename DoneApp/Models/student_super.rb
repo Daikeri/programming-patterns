@@ -49,7 +49,7 @@ class StudentSuper
   end
 
   def git=(value)
-    raise(ArgumentError, 'Неверный формат Git!') unless value.nil? || StudentSuper.valid_git?(value)
+    raise(ArgumentError, "Неверный формат Git!#{self.id} #{value.class}") unless value.nil? || StudentSuper.valid_git?(value)
     @git = value
   end
 

@@ -40,7 +40,6 @@ class DataList
 
   def clear_selected
     @select = []
-    nil
   end
 
   def subscribe(obj)

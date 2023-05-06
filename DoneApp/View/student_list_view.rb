@@ -2,12 +2,16 @@ require 'glimmer-dsl-libui'
 require 'D:\RubyProject\DoneApp\Controllers\student_list_controller.rb'
 require 'D:\RubyProject\DoneApp\Controllers\data_list_contract.rb'
 require 'D:\RubyProject\DoneApp\Manipulators\data_table.rb'
+require 'D:\RubyProject\DoneApp\Controllers\delete_student_controller.rb'
+require_relative 'create_student_view'
+require_relative 'update_student_view'
 
 class StudentListView
   include Glimmer
   include DataListContract
 
-  attr_accessor :arr
+  attr_accessor :arr, :current_page
+  attr_reader :quan_rows, :table_zone, :data_list
 
   def initialize
     @controller = StudentListController.new(self)
@@ -27,7 +31,9 @@ class StudentListView
     @controller.refresh_data(@current_page, @quan_rows)
   end
 
-  def update(data_table_obj)
+  def update(data_list_obj)
+    @data_list = data_list_obj
+    data_table_obj = data_list_obj.data
     rows = data_table_obj.n_rows
     columns = data_table_obj.n_columns
     arr = []
@@ -58,7 +64,7 @@ class StudentListView
   def reset_all
     @current_page = 1
     @quan_rows = 10
-    @pagination_entry.text = '10'
+    @pagination_entry.text = "#{quan_rows}"
     @pagination_label.text = "Страница № 0 из 0"
     @table_zone.cell_rows = Array.new(5) { [] }
   end
@@ -76,7 +82,7 @@ class StudentListView
         @pagination_zone = horizontal_box {
           stretchy false
 
-          button('<') {
+          @past_button = button('<') {
             stretchy false
             on_clicked do
               if @current_page > 1
@@ -90,7 +96,7 @@ class StudentListView
             end
           }
 
-          button('>') {
+          @next_button = button('>') {
             stretchy false
             on_clicked do
               if @current_page && @quan_rows > 0
@@ -121,7 +127,7 @@ class StudentListView
 
           @pagination_entry = entry { |en|
             stretchy false
-            en.text = "#{@quan_rows}"
+            en.enabled = false
             on_changed do |entry|
               if entry.text == '' || entry.text == '0'
                 @current_page = 0
@@ -137,7 +143,7 @@ class StudentListView
             end
           }
 
-          @pagination_label = label('')
+          @pagination_label = label('Страница № 0 из 0')
         }
 
         @table_zone = table { |table|
@@ -262,6 +268,10 @@ class StudentListView
                 |but| but.enabled = false
                 on_clicked do
                   path = open_file
+                  @pagination_entry.enabled = true
+                  @past_button.enabled = true
+                  @next_button.enabled = true
+                  @append_button.enabled = true
                   on_create({json_file: path}) if path
                 end
               }
@@ -273,11 +283,16 @@ class StudentListView
                 on_selected do
                   reset_all
                   if combo.selected == 0
+                    @pagination_entry.enabled = true
+                    @append_button.enabled = true
                     @load_button.enabled = false
                     on_create
                   elsif combo.selected == 1
+                    @pagination_entry.enabled = false
+                    @past_button.enabled = false
+                    @next_button.enabled = false
+                    @append_button.enabled = false
                     @load_button.enabled = true
-                    @table_zone.cell_rows
                   end
                 end
               }
@@ -287,9 +302,24 @@ class StudentListView
           vertical_separator { stretchy false }
 
           @button_box = vertical_box {
-            button('Добавить') {}
-            @update_button = button('Изменить') { |but| but.enabled = false }
-            @delete_button = button('Удалить') { |but| but.enabled = false }
+            @append_button = button('Добавить') { |but|
+              but.enabled = false
+              on_clicked do
+                @create_student_obj = CreateStudentView.new(@controller).display
+              end
+            }
+            @update_button = button('Изменить') { |but|
+              but.enabled = false
+              on_clicked do
+                @update_student_obj = UpdateStudentView.new(self, @controller).display
+              end
+            }
+            @delete_button = button('Удалить') { |but|
+              but.enabled = false
+              on_clicked do
+                @delete_student_obj = DeleteStudentController.new(self, @controller).delete
+              end
+            }
             button('Обновить')
           }
         }
