@@ -16,7 +16,7 @@ def create_students(quantity)
 
   (1..quantity).each do |index|
     required_attr = "'#{values[:arr_last_name].sample}', '#{values[:arr_first_name].sample}', '#{values[:arr_patronymic].sample}'"
-    optional_attr = "'https://github.com/User#{index}', null, 'user#{index}', 'something#{index}email@gmail.com'"
+    optional_attr = "'https://github.com/User#{index}', null, '@user#{index}', 'something#{index}email@gmail.com'"
     str_arr.push "#{required_attr}, #{optional_attr}"
     id_count += 1
   end

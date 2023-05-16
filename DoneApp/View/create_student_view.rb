@@ -157,13 +157,11 @@ class CreateStudentView
           stretchy false
           but.enabled = false
           on_clicked do
-            student_fields = [:last_name, :first_name, :patronymic, :git, :phone, :telegram, :email]
             all_entry_obj = self.instance_variables.select { |var| var.to_s.end_with?('entry') }
             all_entry_obj.map! { |sym| self.instance_variable_get(sym) }
             all_entry_obj.map! { |glimmer_obj| glimmer_obj.text.force_encoding("UTF-8") }
             all_entry_obj.map! { |text| text == '' ? nil : text }
-            hash = student_fields.zip(all_entry_obj).to_h
-            @controller.append(hash)
+            @controller.append(all_entry_obj)
             window.destroy
           end
         }
@@ -178,25 +176,25 @@ class CreateStudentView
     filter_value.force_encoding("UTF-8")
     if filter_value != ''
       unless filter_value.match?(regex)
-        label_on_or_off(label_obj, :on)
+        label_set_mode(label_obj, :on)
         @required_fields[symbol] = false if @required_fields.key?(symbol)
         @optional_fields[symbol] = false if @optional_fields.key?(symbol)
         fields_check
       else
-        label_on_or_off(label_obj, :off)
+        label_set_mode(label_obj, :off)
         @required_fields[symbol] = true if @required_fields.key?(symbol)
         @optional_fields[symbol] = true if @optional_fields.key?(symbol)
         fields_check
       end
     else
-      label_on_or_off(label_obj, :off)
+      label_set_mode(label_obj, :off)
       @required_fields[symbol] = false if @required_fields.key?(symbol)
       @optional_fields[symbol] = true if @optional_fields.key?(symbol)
       fields_check
     end
   end
 
-  def label_on_or_off(some_label, state)
+  def label_set_mode(some_label, state)
     if state == :on
       some_label.enabled = true
       some_label.text = 'Неправильный формат введенной строки!'

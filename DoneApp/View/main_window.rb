@@ -1,11 +1,13 @@
 require 'glimmer-dsl-libui'
 require_relative 'student_list_view.rb'
+require 'D:\RubyProject\DoneApp\View\LaboratoryWork\lw_folder_view.rb'
 
 class MainWindow
   include Glimmer
 
   def initialize
     @student_list_view = StudentListView.new
+    @lw_folder_view = LWFolderView.new
   end
 
   def display
@@ -14,7 +16,7 @@ class MainWindow
 
       tab {
         @student_list_view.create
-        tab_item('Вкладка № 2')
+        @lw_folder_view.create
         tab_item('Вкладка № 3')
       }
     }.show

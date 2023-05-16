@@ -1,8 +1,6 @@
-require 'D:/RubyProject/DoneApp/SourceManagement/Adapters/db_adapter.rb'
-require 'D:/RubyProject/DoneApp/SourceManagement/Adapters/file_content_adapter.rb'
+# frozen_string_literal: true
 
-class StudentList
-
+class StudentListTest
   def initialize(some_adapter)
     @adapter_obj = some_adapter
   end
@@ -11,8 +9,8 @@ class StudentList
     @adapter_obj.get_by_id(id)
   end
 
-  def get_k_n_student_short_list(list_number, quan_element, filters_hash=nil, exist_data_list=nil)
-    @adapter_obj.get_k_n_student_short_list(list_number, quan_element, filters_hash, exist_data_list)
+  def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil, filters_hash=nil)
+    @adapter_obj.get_k_n_student_short_list(list_number, quan_element, exist_data_list, filters_hash)
   end
 
   def append(object)

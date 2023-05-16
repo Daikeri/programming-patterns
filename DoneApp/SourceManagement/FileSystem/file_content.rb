@@ -11,6 +11,7 @@ class FileContent
   def initialize(source_path=nil)
     @file_loader = FileLoader.new
     @path = source_path
+    @position_in_arr = [:last_name, :first_name, :patronymic, :git, :phone, :telegram, :email].zip((0..6).to_a).to_h
     set_value if @path
   end
 
@@ -22,13 +23,14 @@ class FileContent
     source_path ? @file_loader.write_to_file(source_path, @arr) : @file_loader.write_to_file(@path, @arr)
   end
 
-  def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil)
+  def get_k_n_student_short_list(list_number, quan_element, filters_hash=nil, exist_data_list=nil)
     message = "В качестве необязатального аргумента может использоваться только объект типа DataListStudentShort!"
     stud_short_arr = if list_number * quan_element < @arr.length
                        @arr[(list_number - 1) * quan_element...list_number * quan_element]
                      else
                        (list_number - 1) * quan_element < @arr.length ? @arr[(list_number - 1) * quan_element...@arr.length] : @arr
                      end
+    stud_short_arr = apply_filters(stud_short_arr, filters_hash) if filters_hash
     stud_short_arr = stud_short_arr.map { |obj| StudentShort.from_object(obj) }
     if exist_data_list
       raise(ArgumentError, message) unless valid_data_list?(exist_data_list)
@@ -93,6 +95,15 @@ class FileContent
 
   def valid_student?(object)
     object.is_a?(Student)
+  end
+
+  def apply_filters(arr_obj, filters)
+    deep_copy_arr_obj = arr_obj.map(&:dup)
+    filters.each_pair do |key, value|
+      condition = value ? lambda { |field| !field.nil? } : lambda { |field| field.nil? }
+      arr_obj.select! { |stud_obj| condition.call(stud_obj.send(key)) }
+    end
+    arr_obj.empty? ? deep_copy_arr_obj : arr_obj
   end
 
 end

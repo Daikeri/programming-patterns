@@ -22,10 +22,9 @@ class DeleteStudentController
   def get_id_arr
     selected_students = @main_view.table_zone.selection
     selected_students.map! { |number| number + 1 }
-    selected_students.each { |number| @main_view.data_list.sel(number) }
-    id_arr = @main_view.data_list.get_selected
-    @main_view.data_list.clear_selected
+    selected_students.each { |number| @senior_controller.data_list_obj.sel(number) }
+    id_arr = @senior_controller.data_list_obj.get_selected
+    @senior_controller.data_list_obj.clear_selected
     id_arr
   end
-
 end

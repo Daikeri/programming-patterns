@@ -10,8 +10,8 @@ class FileContentAdapter
     @file_content_obj.get_by_id(id)
   end
 
-  def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil)
-    @file_content_obj.get_k_n_student_short_list(list_number, quan_element, exist_data_list)
+  def get_k_n_student_short_list(list_number, quan_element, filters_hash=nil, exist_data_list=nil)
+    @file_content_obj.get_k_n_student_short_list(list_number, quan_element, filters_hash, exist_data_list)
   end
 
   def append(object)

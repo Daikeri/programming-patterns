@@ -210,7 +210,7 @@ def json_data_set(quan)
       email = nil
     elsif contact == "Telegram"
       phone_number = nil
-      telegram = "#{random_string(8)}"
+      telegram = "@#{random_string(8)}"
       email = nil
     else
       phone_number = nil
@@ -223,7 +223,7 @@ def json_data_set(quan)
       "last_name": last_name,
       "first_name": first_name,
       "patronymic": middle_name,
-      "git": git,
+      "git": [git, nil].sample,
       "phone": phone_number,
       "telegram": telegram,
       "email": email

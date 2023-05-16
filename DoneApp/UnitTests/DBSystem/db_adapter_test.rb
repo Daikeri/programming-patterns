@@ -2,24 +2,29 @@ require 'sqlite3'
 require 'D:/RubyProject/DoneApp/Models/student.rb'
 require 'D:/RubyProject/DoneApp/Models/student_short.rb'
 require 'D:/RubyProject/DoneApp/Manipulators/data_list_student_short'
-require 'D:/RubyProject/DoneApp/SourceManagement/DBSystem/db_connection'
+require_relative 'db_connection_test'
 
-class DBAdapter
+class DBAdapterTest
+
+  attr_reader :order_in_arr
 
   def initialize
-    @database_object = DBConnection.instance
+    @database_object = DBConnectionTest.instance
+    #@position_in_arr = [:last_name, :first_name, :patronymic, :git, :phone, :telegram, :email].zip((0..6).to_a).to_h
     set_count_id
   end
 
   def get_by_id(id)
-    request = @database_object.get_cursor.execute "select * from Students where id=#{id}"
+    request = @database_object.get_cursor.execute "select * from Студенты where id=#{id}"
     to_student(*request)
   end
 
-  def get_k_n_student_short_list(list_number, quan_element, filters_hash=nil, exist_data_list=nil)
+  def get_k_n_student_short_list(list_number, quan_element, exist_data_list=nil, filters_hash=nil)
     message = "В качестве необязатального аргумента может использоваться только объект типа DataListStudentShort!"
-    request_result = @database_object.get_cursor.execute "select * from Students limit #{(list_number - 1) * quan_element}, #{quan_element}"
+    request_result = @database_object.get_cursor.execute "select * from Студенты limit #{(list_number - 1) * quan_element}, #{quan_element}"
+
     request_result = apply_filters(request_result, filters_hash) if filters_hash
+
     if exist_data_list
       raise(ArgumentError, message) unless valid_data_list?(exist_data_list)
       exist_data_list.arr = to_student_short_arr(request_result)
@@ -32,7 +37,7 @@ class DBAdapter
     temp = object.to_s.split(', ').map! { |el| el == '-' ? 'null' : el}
     values = ""
     temp.each { |el| el == 'null' ? values += "#{el}," : values += "'#{el}',"}
-    @database_object.get_cursor.execute "insert into Students (#{self.attr}) values (#{values[0..values.length - 2]})"
+    @database_object.get_cursor.execute "insert into Студенты (#{self.attr}) values (#{values[0..values.length - 2]})"
   end
 
   def replace_by_id(id, object)
@@ -41,15 +46,15 @@ class DBAdapter
     hash.transform_values! { |value| value.nil? ? 'null' : value }
     request = ''
     hash.each_pair { |key, value| value == 'null' ? request += "#{key.to_s} = #{value}," : request += "#{key.to_s} = '#{value}',"}
-    @database_object.get_cursor.execute "update Students set #{request[0..request.length-2]} where id = #{id}"
+    @database_object.get_cursor.execute "update Студенты set #{request[0..request.length-2]} where id = #{id}"
   end
 
   def delete_by_id(id)
-    @database_object.get_cursor.execute "delete from Students where id=#{id}"
+    @database_object.get_cursor.execute "delete from Студенты where id=#{id}"
   end
 
   def get_student_count
-    hash = @database_object.get_cursor.execute  "select count(*) from Students"
+    hash = @database_object.get_cursor.execute  "select count(*) from Студенты"
     hash.first.values.first
   end
 
@@ -62,7 +67,7 @@ class DBAdapter
   protected
 
   def set_count_id
-    hash = @database_object.get_cursor.execute("SELECT max(id) FROM Students").first
+    hash = @database_object.get_cursor.execute("SELECT max(id) FROM Студенты").first
     @id_count = hash['max(id)'] + 1
   end
 
@@ -97,3 +102,4 @@ class DBAdapter
     arr_hash
   end
 end
+

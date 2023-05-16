@@ -26,7 +26,6 @@ class DataList
 
   def sel(number)
     @select.push(number)
-    nil
   end
 
   def get_selected
@@ -52,5 +51,4 @@ class DataList
 
   def notify
   end
-
 end

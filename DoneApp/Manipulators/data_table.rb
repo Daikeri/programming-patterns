@@ -3,7 +3,6 @@ class DataTable
 
   def initialize(source_array)
     @arr = []
-
     source_array.each do |obj|
       temp = [obj[0]]
       field = obj[1].instance_variables
@@ -25,5 +24,4 @@ class DataTable
   def n_columns
     @arr[0].size
   end
-
 end

@@ -3,9 +3,9 @@ class StudentSuper
 
   private_class_method :new
 
-  GIT = /\Ahttps:\/\/github\.com\/\w+\z/
+  GIT = /^https:\/\/github\.com\/([A-Za-z0-9_.-]+)\/?$/
   PHONE = /^\+?[78] ?[(-]?\d{3} ?[)-]?[ -]?\d{3}[ -]?\d{2}[ -]?\d{2}$/
-  TELEGRAM = /^[a-zA-Z0-9_.]+$/
+  TELEGRAM = /\A@[\w_.]{2,32}\z/
   EMAIL = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
 
   def StudentSuper.valid_git?(str)
@@ -59,7 +59,7 @@ class StudentSuper
   end
 
   def telegram=(value)
-    raise(ArgumentError, 'Неверный формат ника telegram!') unless value.nil? || StudentSuper.valid_telegram?(value)
+    raise(ArgumentError, "Неверный формат ника telegram!#{self.id}") unless value.nil? || StudentSuper.valid_telegram?(value)
     @telegram = value
   end
 
