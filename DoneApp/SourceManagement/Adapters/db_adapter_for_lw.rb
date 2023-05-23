@@ -14,7 +14,6 @@ class DBAdapterForLW
   end
 
   def get_by_number(number)
-
     request = @database_object.get_cursor.execute "select * from LaboratoryWork where number=#{number}"
     request.empty? ? nil : to_lw(*request)
   end

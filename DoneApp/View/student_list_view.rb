@@ -104,6 +104,7 @@ class StudentListView
         }
 
         @table_zone = table { |table|
+          sortable false
           selection_mode :zero_or_many
 
           text_column('№')

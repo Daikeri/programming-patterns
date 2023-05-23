@@ -11,7 +11,7 @@ class UpdateLWController
     @lw_obj = get_lw_object
     values = @lw_obj.to_hash.values
     values.shift
-    all_entry = get_entry.unshift(@update_view.number_label) #(@update_view.instance_variable_get(:@number_label))
+    all_entry = get_entry.unshift(@update_view.number_label)
     (0...values.length).each { |item| all_entry[item].text = values[item].to_s }
   end
 

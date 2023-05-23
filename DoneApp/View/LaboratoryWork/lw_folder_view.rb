@@ -20,7 +20,7 @@ class LWFolderView
           hexpand true
           vexpand true
           xspan 1
-
+          sortable false
           selection_mode :zero_or_one
           text_column('№')
           text_column('Наименование')
